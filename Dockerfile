@@ -1,22 +1,31 @@
-FROM openjdk:8-jre-alpine
+FROM jboss/base-jdk:7
+
 MAINTAINER mciz
 
-ARG MIRROR=http://apache.mirrors.pair.com
-ARG VERSION=3.4.6
+USER root
 
-LABEL name="zookeeper" version=$VERSION
-
-RUN apk add --no-cache wget bash \
-    && mkdir /opt \
-    && wget -q -O - $MIRROR/zookeeper/zookeeper-$VERSION/zookeeper-$VERSION.tar.gz | tar -xzf - -C /opt \
-    && mv /opt/zookeeper-$VERSION /opt/zookeeper \
-    && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg 
+ENV ZOOKEEPER_VERSION 3.4.6
 
 EXPOSE 2181 2888 3888
 
+RUN curl http://apache.mirrors.pair.com/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz | tar -xzf - -C /opt \
+    && yum update -y \
+    && yum install -y gettext && yum clean all \
+    && mv /opt/zookeeper-${ZOOKEEPER_VERSION} /opt/zookeeper \
+    && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg 
+   
+
 WORKDIR /opt/zookeeper
+
+COPY run.sh ./bin/
+
+RUN chmod 755 /opt/zookeeper/bin/run.sh
+
+RUN chown -R jboss:0 /opt/zookeeper \
+    && chmod -R g+rw /opt/zookeeper
+
+USER jboss
 
 VOLUME ["/opt/zookeeper/conf"]
 
-ENTRYPOINT ["/opt/zookeeper/bin/zkServer.sh"]
-CMD ["start-foreground"]
+CMD ["/opt/zookeeper/bin/run.sh"]
