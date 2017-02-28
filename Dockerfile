@@ -6,14 +6,13 @@ USER root
 
 ENV ZOOKEEPER_VERSION 3.4.6
 
-EXPOSE 2181 2888 3888
+EXPOSE 2181 2888 3888 8084 
 
 RUN curl http://apache.mirrors.pair.com/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz | tar -xzf - -C /opt \
-    && yum update -y \
-    && yum install -y gettext && yum clean all \
+#   && yum update -y \
+# && yum install -y gettext && yum clean all \
     && mv /opt/zookeeper-${ZOOKEEPER_VERSION} /opt/zookeeper \
     && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg 
-   
 
 WORKDIR /opt/zookeeper
 
