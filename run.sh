@@ -2,4 +2,4 @@
 
 
 
-exec /opt/zookeeper/bin/zkServer.sh start-foreground
+exec /opt/jboss/zookeeper/bin/zkServer.sh start-foreground
