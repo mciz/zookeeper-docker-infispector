@@ -1,5 +1,6 @@
 FROM jboss/base-jdk:7
-MAINTAINER tsykora
+MAINTAINER mciz
+LABEL io.openshift.tags zk-kf
 ENV ZOOKEEPER_VERSION 3.4.6
 EXPOSE 2181 2888 3888 8084 
 USER jboss
